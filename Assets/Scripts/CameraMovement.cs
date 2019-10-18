@@ -9,8 +9,6 @@ public class CameraMovement : MonoBehaviour
 
   void Update()
   {
-    Ray ray = Camera.main.ScreenPointToRay(new Vector3(200, 200, 0));
-    Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
     if (Input.GetMouseButton(0))
     {
       if (isClicked)
