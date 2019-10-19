@@ -4,22 +4,18 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-  private bool isClicked = false;
-  private Vector3 sourcePosition;
+  private Transform center;
 
+  void Start()
+  {
+    center = new GameObject().transform;
+    this.transform.parent = center;
+  }
   void Update()
   {
     if (Input.GetMouseButton(0))
     {
-      if (isClicked)
-      {
-
-      }
-      else
-      {
-        isClicked = true;
-
-      }
+      center.Rotate(Input.GetAxis("Mouse Y") * 10, Input.GetAxis("Mouse X") * 10, 0);
     }
   }
 }

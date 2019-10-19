@@ -64,6 +64,7 @@ public class Network : MonoBehaviour
       Link link = data.links[i];
       Node[] cNodes = new Node[2] { data.nodes[link.source], data.nodes[link.target] };
       Vector3 center = (cNodes[1].position + cNodes[0].position) / 2;
+      float distance = Vector3.Distance(cNodes[0].position, cNodes[1].position);
 
       cylinderArray[i] = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
       cylinderArray[i].transform.position = center;
@@ -71,7 +72,7 @@ public class Network : MonoBehaviour
         Vector3.up, cNodes[0].position - cNodes[1].position
         );
       cylinderArray[i].transform.localScale = new Vector3(
-        1, Vector3.Distance(cNodes[0].position, cNodes[1].position) / 2, 1
+        distance / 20, distance / 2, distance / 20
         );
 
     }
