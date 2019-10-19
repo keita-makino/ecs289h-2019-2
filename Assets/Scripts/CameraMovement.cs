@@ -17,5 +17,6 @@ public class CameraMovement : MonoBehaviour
     {
       center.Rotate(Input.GetAxis("Mouse Y") * 10, Input.GetAxis("Mouse X") * 10, 0);
     }
+    center.localScale -= Vector3.forward * Input.GetAxis("Mouse ScrollWheel");
   }
 }

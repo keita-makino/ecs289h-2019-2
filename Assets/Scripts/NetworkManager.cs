@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,7 @@ public class Data
   public Link[] links;
 }
 
-public class Network : MonoBehaviour
+public class NetworkManager : MonoBehaviour
 {
   private Data data;
   private GameObject[] sphereArray;
@@ -50,6 +51,8 @@ public class Network : MonoBehaviour
       sphereArray[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
       sphereArray[i].transform.position = node.position;
       sphereArray[i].transform.localScale = new Vector3(3, 3, 3);
+      sphereArray[i].AddComponent<EventHandler>();
+      sphereArray[i].GetComponent<EventHandler>().nodeId = node.id;
 
       Color color;
       if (ColorUtility.TryParseHtmlString(node.color, out color))
@@ -80,4 +83,39 @@ public class Network : MonoBehaviour
 
   void Update() { }
 }
-// Update is called once per frame
+
+public class EventHandler : MonoBehaviour
+{
+  public string nodeId { get; set; }
+  private TextManager textManager;
+
+  private ToolTipManager toolTipManager;
+
+  public void Awake()
+  {
+    textManager = GameObject.Find("TextManager").GetComponent<TextManager>();
+    toolTipManager = GameObject.Find("ToolTipManager").GetComponent<ToolTipManager>();
+  }
+  public void OnMouseEnter()
+  {
+    textManager.textValue = nodeId;
+    toolTipManager.isAvailabe[2] = false;
+  }
+  public void OnMouseExit()
+  {
+    textManager.textValue = "hogehoge";
+  }
+  public void OnMouseOver()
+  {
+    Vector3 pos = Input.mousePosition;
+    textManager.position = new Vector3(
+        pos.x < (Screen.width / 2) ?
+          Math.Max(pos.x - 50, (45 + nodeId.Length * 13) / 2) :
+          Math.Min(pos.x + 50, Screen.width - (45 + nodeId.Length * 13) / 2),
+        pos.y < (Screen.height / 2) ?
+          Math.Max(pos.y - 50, 25) :
+          Math.Min(pos.y + 50, Screen.height - 25),
+        0
+      ) - new Vector3(Screen.width / 2, Screen.height / 2, 0);
+  }
+}
