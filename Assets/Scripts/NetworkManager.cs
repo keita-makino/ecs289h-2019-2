@@ -99,7 +99,10 @@ public class EventHandler : MonoBehaviour
   public void OnMouseEnter()
   {
     textManager.textValue = nodeId;
-    toolTipManager.isAvailabe[2] = false;
+    if (!Input.GetMouseButton(0))
+    {
+      toolTipManager.isAvailabe[2] = false;
+    }
   }
   public void OnMouseExit()
   {
