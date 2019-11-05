@@ -5,47 +5,65 @@ using UnityEngine.UI;
 
 public class TextManager : MonoBehaviour
 {
+  public TooltipManager TooltipManager;
+  public LaserPointer laserPointer;
+  private bool isAvailabe = true;
   private UnityEngine.UI.Text text;
   private UnityEngine.UI.Image image;
-  public string textValue { get; set; } = "hogehoge";
+  public string textValue { get; set; } = "hgoehoge";
   public RectTransform rectTransform { get; set; }
-  public Vector2 size { get; set; } = new Vector2(250, 60);
   public Vector3 position { get; set; } = new Vector3(0, 0, 0);
+  public Camera worldCamera;
+  private GameObject canvasObject;
   void Start()
   {
-    GameObject canvasObject = new GameObject();
+    canvasObject = new GameObject();
     canvasObject.AddComponent<Canvas>();
     Canvas canvas = canvasObject.GetComponent<Canvas>();
-    canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+    canvas.renderMode = RenderMode.WorldSpace;
+    canvas.worldCamera = worldCamera;
 
     GameObject imageObject = new GameObject();
     imageObject.transform.parent = canvasObject.transform;
     image = imageObject.AddComponent<UnityEngine.UI.Image>();
+    imageObject.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
 
     GameObject textObject = new GameObject();
     textObject.transform.parent = imageObject.transform;
+    textObject.transform.localScale = new Vector3(1, 1, 1);
 
     text = textObject.AddComponent<UnityEngine.UI.Text>();
     text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-    text.fontSize = 24;
+    text.fontSize = 120;
     text.fontStyle = FontStyle.Bold;
     text.color = Color.black;
     text.alignment = TextAnchor.MiddleCenter;
     text.horizontalOverflow = HorizontalWrapMode.Overflow;
+    text.verticalOverflow = VerticalWrapMode.Overflow;
 
     rectTransform = image.GetComponent<RectTransform>();
   }
 
   void Update()
   {
-    if (Input.GetMouseButtonUp(0))
-    {
-      textValue = "hogehoge";
-    }
-    image.enabled = (textValue != "hogehoge") && !Input.GetMouseButton(0);
+    isAvailabe = true;
+    if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger))
+      isAvailabe = false;
+    if (OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick) != Vector2.zero)
+      isAvailabe = false;
+    if (TooltipManager.isAvailabe)
+      isAvailabe = false;
+    image.enabled = (textValue != "hogehoge" && isAvailabe);
     text.enabled = image.enabled;
+
+    Vector3 start = laserPointer._startPoint;
+    Vector3 end = laserPointer._endPoint;
+
+    position = start + Quaternion.Euler(12.5, 0, 0) * ((end - start) / 2);
     text.text = textValue;
-    rectTransform.sizeDelta = new Vector2(45 + textValue.Length * 13, 48);
-    rectTransform.localPosition = position;
+    rectTransform.sizeDelta = new Vector2(225 + textValue.Length * 65, 200);
+    canvasObject.transform.position = position;
+    canvasObject.transform.rotation = Quaternion.LookRotation(canvasObject.transform.position - worldCamera.transform.position);
+
   }
 }
