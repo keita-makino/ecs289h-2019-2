@@ -59,7 +59,7 @@ public class TextManager : MonoBehaviour
     Vector3 start = laserPointer._startPoint;
     Vector3 end = laserPointer._endPoint;
 
-    position = start + Quaternion.Euler(12.5, 0, 0) * ((end - start) / 2);
+    position = start + Quaternion.Euler(12.5f, 0, 0) * ((end - start) / 2);
     text.text = textValue;
     rectTransform.sizeDelta = new Vector2(225 + textValue.Length * 65, 200);
     canvasObject.transform.position = position;
